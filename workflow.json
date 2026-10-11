@@ -1,0 +1,125 @@
+{
+  "name": "Telegram Claude Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "845c057d-0d47-443c-bfdb-344519c491cf",
+      "name": "Telegram Trigger",
+      "webhookId": "050cc38d-2925-4ae0-878f-47dd07b82a52",
+      "credentials": {
+        "telegramApi": {
+          "id": "MdWOoIYQxgcdbARL",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "claude-haiku-4-5-20251001",
+          "mode": "list",
+          "cachedResultName": "claude-haiku-4-5-20251001"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.message.text }}"
+            },
+            {}
+          ]
+        },
+        "options": {
+          "system": "You are a friendly, concise assistant on Telegram. Keep replies under 120 words. Use plain text only, with no markdown symbols. If you don't know something, say so instead of guessing. If a question is unclear, ask one short clarifying question."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "typeVersion": 1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "f3fbc99d-8520-40cb-8e8f-df3eadff3038",
+      "name": "Message a model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "XGhY2ZoWn7PcJIT0",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.content[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        592,
+        0
+      ],
+      "id": "485b393c-fb40-4ce4-a074-a02a58c4b24c",
+      "name": "Send a text message",
+      "webhookId": "e59dcfbb-e3b2-4b07-9ac8-e981b21e09c0",
+      "credentials": {
+        "telegramApi": {
+          "id": "MdWOoIYQxgcdbARL",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7e9864fa-fe8f-4612-b270-1a8d6bb09190",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b617e3592b77adf2557d76d5239af6acec54bbcc094008983fbf096b3dc8b8de"
+  },
+  "nodeGroups": [],
+  "id": "CFdH8YVsazancBte",
+  "tags": []
+}
