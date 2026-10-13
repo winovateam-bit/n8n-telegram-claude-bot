@@ -9,6 +9,8 @@ A Telegram chatbot built in n8n. Messages sent to the bot are answered by Claude
 1. **Telegram Trigger** receives each incoming message through a webhook.
 2. **Message a model** (Anthropic Claude) sends the text to Claude with a system prompt.
 3. **Send a text message** returns Claude's reply to the same Telegram chat.
+4. Logs every conversation (time, chat ID, user, question, answer) to Google Sheets
+5. If the Claude API fails, an error branch sends the user a friendly fallback message
 
 ## Stack
 
@@ -28,4 +30,4 @@ A Telegram chatbot built in n8n. Messages sent to the bot are answered by Claude
 ## Notes
 
 - A Telegram bot can only have one active webhook, so test runs and a published workflow cannot listen at the same time.
-- Planned next: error handling, Google Sheets logging of conversations, and deployment to a VPS with a fixed domain.
+- Planned next: deployment to a VPS with a fixed domain, so ngrok is no longer needed.

@@ -52,12 +52,16 @@
       ],
       "id": "f3fbc99d-8520-40cb-8e8f-df3eadff3038",
       "name": "Message a model",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 2000,
       "credentials": {
         "anthropicApi": {
           "id": "XGhY2ZoWn7PcJIT0",
           "name": "Anthropic account"
         }
-      }
+      },
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -80,6 +84,124 @@
         "telegramApi": {
           "id": "MdWOoIYQxgcdbARL",
           "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Sorry, something went wrong on my side. Please try again in a minute.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        192
+      ],
+      "id": "a1f8974b-1cff-4cd0-a2a8-c1268ff42993",
+      "name": "Send a text message1",
+      "webhookId": "ed53ce89-482c-42f5-ac93-2418cf95464f",
+      "credentials": {
+        "telegramApi": {
+          "id": "MdWOoIYQxgcdbARL",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1OHsekCzieqhofcCawc0feL0zs0AGqwIL_uyFK58tJjg",
+          "mode": "list",
+          "cachedResultName": "Telegram Bot Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OHsekCzieqhofcCawc0feL0zs0AGqwIL_uyFK58tJjg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OHsekCzieqhofcCawc0feL0zs0AGqwIL_uyFK58tJjg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Chat ID": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+            "User": "={{ $('Telegram Trigger').item.json.message.from.first_name }}",
+            "Question": "={{ $('Telegram Trigger').item.json.message.text }}",
+            "Time": "={{ $now.setZone('Asia/Karachi').toFormat('yyyy-MM-dd HH:mm:ss') }}",
+            "Answer": "={{ $('Message a model').item.json.content[0].text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Chat ID",
+              "displayName": "Chat ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "User",
+              "displayName": "User",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Question",
+              "displayName": "Question",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Answer",
+              "displayName": "Answer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        816,
+        0
+      ],
+      "id": "ab1b16d5-cb7e-46dc-bd38-034c1b6a3752",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RJJjmXp4yYBKUSmR",
+          "name": "Google Sheets account"
         }
       }
     }
@@ -105,6 +227,24 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     }
@@ -114,7 +254,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "7e9864fa-fe8f-4612-b270-1a8d6bb09190",
+  "versionId": "b0200ef3-475b-4295-9226-d2fdeceb197e",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "b617e3592b77adf2557d76d5239af6acec54bbcc094008983fbf096b3dc8b8de"
